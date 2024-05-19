@@ -1,0 +1,184 @@
+-- Crear la base de datos
+CREATE DATABASE IF NOT EXISTS TiendaVideojuegos;
+
+-- Usar la base de datos creada
+USE TiendaVideojuegos;
+
+-- Crear tabla de Marcas
+CREATE TABLE Marcas (
+    id_marca INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_marca VARCHAR(50) NOT NULL
+);
+
+-- Crear tabla de Consolas
+CREATE TABLE Consolas (
+    id_consola INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_consola VARCHAR(50) NOT NULL,
+    id_marca INT,
+    portatil BOOLEAN NOT NULL,
+    FOREIGN KEY (id_marca) REFERENCES Marcas(id_marca)
+);
+
+-- Crear tabla de Juegos con el precio
+CREATE TABLE Juegos (
+    id_juego INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(100) NOT NULL,
+    anio_lanzamiento YEAR NOT NULL,
+    multijugador BOOLEAN NOT NULL,
+    precio DECIMAL(10, 2),
+    id_consola INT,
+    FOREIGN KEY (id_consola) REFERENCES Consolas(id_consola)
+);
+
+-- Crear tabla de Usuarios
+CREATE TABLE Usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_usuario VARCHAR(50) NOT NULL,
+    correo_electronico VARCHAR(100) NOT NULL,
+    contrasena VARCHAR(100) NOT NULL
+);
+
+-- Crear tabla de Criticas
+CREATE TABLE Criticas (
+    id_critica INT AUTO_INCREMENT PRIMARY KEY,
+    id_juego INT,
+    id_usuario INT,
+    puntuacion INT,
+    comentario TEXT,
+    fecha_critica DATE,
+    FOREIGN KEY (id_juego) REFERENCES Juegos(id_juego),
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario)
+);
+
+-- Crear tabla de Ventas
+CREATE TABLE Ventas (
+    id_venta INT AUTO_INCREMENT PRIMARY KEY,
+    id_juego INT,
+    cantidad INT,
+    fecha_venta DATE,
+    FOREIGN KEY (id_juego) REFERENCES Juegos(id_juego)
+);
+-- Insertar datos en la tabla Marcas
+INSERT INTO Marcas (nombre_marca) VALUES
+('Nintendo'),
+('Sony'),
+('Sega'),
+('Xbox');
+-- Insertar datos en la tabla Consolas
+INSERT INTO Consolas (nombre_consola, id_marca, portatil) VALUES
+('NES', 1, FALSE),
+('SNES', 1, FALSE),
+('Nintendo 64', 1, FALSE),
+('Nintendo GameCube', 1, FALSE),
+('Nintendo Wii', 1, FALSE),
+('Nintendo Wii U', 1, FALSE),
+('Nintendo Switch', 1, TRUE),
+('PlayStation', 2, FALSE),
+('PlayStation 2', 2, FALSE),
+('PlayStation 3', 2, FALSE),
+('PlayStation 4', 2, FALSE),
+('PlayStation 5', 2, FALSE),
+('Sega Master System', 3, FALSE),
+('Sega Genesis', 3, FALSE),
+('Sega Saturn', 3, FALSE),
+('Sega Dreamcast', 3, FALSE),
+('Xbox', 4, FALSE),
+('Xbox 360', 4, FALSE),
+('Xbox One', 4, FALSE),
+('Xbox Series X', 4, FALSE);
+-- Insertar datos en la tabla Juegos, incluyendo el precio
+INSERT INTO Juegos (titulo, anio_lanzamiento, multijugador, precio, id_consola) VALUES
+('Super Mario Bros.', 1985, FALSE, 20.00, 1), -- NES
+('The Legend of Zelda: A Link to the Past', 1991, FALSE, 30.00, 2), -- SNES
+('Super Mario 64', 1996, FALSE, 40.00, 3), -- Nintendo 64
+('The Legend of Zelda: Ocarina of Time', 1998, FALSE, 45.00, 3), -- Nintendo 64
+('Mario Kart 64', 1996, TRUE, 35.00, 3), -- Nintendo 64
+('The Legend of Zelda: Majora''s Mask', 2000, FALSE, 50.00, 3), -- Nintendo 64
+('Super Smash Bros. Melee', 2001, TRUE, 50.00, 4), -- GameCube
+('The Legend of Zelda: The Wind Waker', 2002, FALSE, 40.00, 4), -- GameCube
+('Metroid Prime', 2002, FALSE, 30.00, 4), -- GameCube
+('Resident Evil 4', 2005, FALSE, 25.00, 4), -- GameCube
+('Super Mario Galaxy', 2007, FALSE, 40.00, 5), -- Wii
+('Wii Sports', 2006, TRUE, 20.00, 5), -- Wii
+('The Legend of Zelda: Twilight Princess', 2006, FALSE, 30.00, 5), -- Wii
+('Super Mario 3D World', 2013, TRUE, 60.00, 7), -- Switch
+('The Legend of Zelda: Breath of the Wild', 2017, FALSE, 55.00, 7), -- Switch
+('Super Smash Bros. Ultimate', 2018, TRUE, 50.00, 7), -- Switch
+('Final Fantasy VII', 1997, FALSE, 45.00, 8), -- PlayStation
+('Final Fantasy VIII', 1999, FALSE, 50.00, 8), -- PlayStation
+('Gran Turismo 2', 1999, FALSE, 25.00, 8), -- PlayStation
+('Metal Gear Solid', 1998, FALSE, 40.00, 8), -- PlayStation
+('Crash Bandicoot: Warped', 1998, FALSE, 30.00, 8), -- PlayStation
+('Grand Theft Auto: San Andreas', 2004, TRUE, 25.00, 9), -- PS2
+('Shadow of the Colossus', 2005, FALSE, 35.00, 9), -- PS2
+('God of War II', 2007, FALSE, 40.00, 9), -- PS2
+('Metal Gear Solid 3: Snake Eater', 2004, FALSE, 30.00, 9), -- PS2
+('Kingdom Hearts', 2002, FALSE, 30.00, 9), -- PS2
+('The Last of Us', 2013, FALSE, 35.00, 10), -- PS3
+('Uncharted 2: Among Thieves', 2009, FALSE, 40.00, 10), -- PS3
+('Red Dead Redemption', 2010, TRUE, 30.00, 10), -- PS3
+('LittleBigPlanet', 2008, TRUE, 20.00, 10), -- PS3
+('Metal Gear Solid 4: Guns of the Patriots', 2008, FALSE, 35.00, 10), -- PS3
+('Red Dead Redemption II', 2018, TRUE, 60.00, 11), -- PS4
+('The Last of Us Part II', 2020, FALSE, 65.00, 11), -- PS4
+('Marvel''s Spider-Man', 2018, FALSE, 45.00, 11), -- PS4
+('Bloodborne', 2015, FALSE, 40.00, 11), -- PS4
+('Horizon Zero Dawn', 2017, FALSE, 30.00, 11), -- PS4
+('Sonic the Hedgehog', 1991, FALSE, 15.00, 13), -- Master System
+('Alex Kidd in Miracle World', 1986, FALSE, 25.00, 13), -- Master System
+('Wonder Boy III: The Dragon''s Trap', 1989, FALSE, 20.00, 13), -- Master System
+('Phantasy Star', 1987, FALSE, 30.00, 13), -- Master System
+('Shinobi', 1987, FALSE, 20.00, 13), -- Master System
+('Sonic & Knuckles', 1994, FALSE, 25.00, 14), -- Genesis
+('Streets of Rage 2', 1992, TRUE, 35.00, 14), -- Genesis
+('Mortal Kombat II', 1993, TRUE, 30.00, 14), -- Genesis
+('Shining Force II', 1993, FALSE, 40.00, 14), -- Genesis
+('Gunstar Heroes', 1993, TRUE, 45.00, 14), -- Genesis
+('Sonic R', 1997, TRUE, 20.00, 15), -- Saturn
+('Panzer Dragoon Saga', 1998, FALSE, 200.00, 15), -- Saturn
+('Nights into Dreams', 1996, FALSE, 35.00, 15), -- Saturn
+('Virtua Fighter 2', 1995, TRUE, 25.00, 15), -- Saturn
+('Shining Force III', 1997, FALSE, 100.00, 15), -- Saturn
+('Sonic Adventure', 1999, FALSE, 30.00, 16), -- Dreamcast
+('Shenmue', 1999, FALSE, 40.00, 16), -- Dreamcast
+('Jet Set Radio', 2000, FALSE, 35.00, 16), -- Dreamcast
+('Crazy Taxi', 1999, FALSE, 20.00, 16), -- Dreamcast
+('Skies of Arcadia', 2000, FALSE, 50.00, 16), -- Dreamcast
+('Halo: Combat Evolved', 2001, TRUE, 15.00, 17), -- Xbox
+('Halo 2', 2004, TRUE, 20.00, 17), -- Xbox
+('Fable', 2004, FALSE, 25.00, 17), -- Xbox
+('Ninja Gaiden', 2004, FALSE, 30.00, 17), -- Xbox
+('Star Wars: Knights of the Old Republic', 2003, FALSE, 35.00, 17), -- Xbox
+('Gears of War', 2006, TRUE, 10.00, 18), -- Xbox 360
+('Mass Effect 2', 2010, FALSE, 20.00, 18), -- Xbox 360
+('Bioshock', 2007, FALSE, 15.00, 18), -- Xbox 360
+('Forza Motorsport 4', 2011, TRUE, 30.00, 18), -- Xbox 360
+('Red Dead Redemption', 2010, TRUE, 30.00, 18), -- Xbox 360
+('Forza Motorsport 7', 2017, TRUE, 50.00, 19), -- Xbox One
+('Halo 5: Guardians', 2015, TRUE, 40.00, 19), -- Xbox One
+('Gears 5', 2019, TRUE, 55.00, 19), -- Xbox One
+('Sea of Thieves', 2018, TRUE, 35.00, 19), -- Xbox One
+('Forza Horizon 4', 2018, TRUE, 45.00, 19), -- Xbox One
+('Halo Infinite', 2021, TRUE, 70.00, 20); -- Xbox Series X
+
+
+-- Insertar datos en la tabla Usuarios
+INSERT INTO Usuarios (nombre_usuario, correo_electronico, contrasena) VALUES
+('usuario1', 'usuario1@example.com', 'password1'),
+('usuario2', 'usuario2@example.com', 'password2');
+
+-- Insertar datos en la tabla Criticas
+INSERT INTO Criticas (id_juego, id_usuario, puntuacion, comentario, fecha_critica) VALUES
+(73, 1, 5, '¡Excelente juego!', '2024-05-01'),
+(73, 2, 4, 'Me encantó este juego.', '2024-05-02'),
+(74, 1, 3, 'Buen juego, pero algo difícil.', '2024-05-03'),
+(75, 2, 5, 'Uno de mis juegos favoritos de la infancia.', '2024-05-04'),
+(76, 1, 2, 'No es lo que esperaba.', '2024-05-05');
+
+-- Insertar datos en la tabla Ventas
+INSERT INTO Ventas (id_juego, cantidad, fecha_venta) VALUES
+(73, 10, '2024-05-01'),
+(74, 5, '2024-05-02'),
+(75, 8, '2024-05-03'),
+(76, 12, '2024-05-04'),
+(80, 3, '2024-05-05');

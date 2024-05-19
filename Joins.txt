@@ -1,0 +1,86 @@
+Obtener los juegos junto con el nombre de la consola y la marca:
+
+	SELECT J.titulo, J.precio, C.nombre_consola, M.nombre_marca
+	FROM Juegos J
+	INNER JOIN Consolas C ON J.id_consola = C.id_consola
+	INNER JOIN Marcas M ON C.id_marca = M.id_marca;
+
+Consulta para obtener el título y el precio de los juegos vendidos junto con el nombre del usuario que realizó la compra:
+	SELECT J.titulo AS juego, M.nombre_marca AS marca, C.comentario
+	FROM Juegos J
+	INNER JOIN Ventas V ON J.id_juego = V.id_juego
+	INNER JOIN Consolas CO ON J.id_consola = CO.id_consola
+	INNER JOIN Marcas M ON CO.id_marca = M.id_marca
+	INNER JOIN Criticas C ON J.id_juego = C.id_juego;
+
+
+Consulta para obtener el título y el precio de los juegos con un precio superior al precio promedio de todos los juegos:
+	SELECT titulo, precio
+	FROM Juegos
+	WHERE precio > (SELECT AVG(precio) FROM Juegos);
+
+Consulta para obtener el número de ventas y el total de ventas por juego:
+	SELECT J.titulo, COUNT(*) AS ventas, SUM(V.cantidad) AS total_ventas
+	FROM Ventas V
+	INNER JOIN Juegos J ON V.id_juego = J.id_juego
+	GROUP BY J.titulo;
+
+Vista para mostrar las críticas de los juegos junto con el título del juego y el nombre del usuario:
+	CREATE VIEW Criticas_Info AS
+	SELECT J.titulo, U.nombre_usuario, C.puntuacion, C.comentario, C.fecha_critica
+	FROM Criticas C
+	INNER JOIN Juegos J ON C.id_juego = J.id_juego
+	INNER JOIN Usuarios U ON C.id_usuario = U.id_usuario;
+
+
+
+Mostrar los juegos con sus críticas y el nombre del usuario que las hizo:
+
+	SELECT J.titulo, C.puntuacion, C.comentario, U.nombre_usuario
+	FROM Criticas C
+	INNER JOIN Juegos J ON C.id_juego = J.id_juego
+	INNER JOIN Usuarios U ON C.id_usuario = U.id_usuario;
+
+Listar las ventas de juegos junto con el título del juego y la fecha de venta:
+
+	SELECT V.fecha_venta, J.titulo, V.cantidad
+	FROM Ventas V
+	INNER JOIN Juegos J ON V.id_juego = J.id_juego;
+
+Mostrar los juegos multijugador y su consola correspondiente:
+
+	SELECT J.titulo, J.multijugador, C.nombre_consola
+	FROM Juegos J
+	INNER JOIN Consolas C ON J.id_consola = C.id_consola
+	WHERE J.multijugador = TRUE;
+
+Obtener la cantidad total de ventas por juego:
+
+	SELECT J.titulo, SUM(V.cantidad) AS total_ventas
+	FROM Juegos J
+	INNER JOIN Ventas V ON J.id_juego = V.id_juego
+	GROUP BY J.titulo;
+
+Procedimiento almacenado para obtener el número total de ventas por año:
+
+	DELIMITER //
+	CREATE PROCEDURE TotalVentasPorAnio()
+	BEGIN
+   		SELECT YEAR(fecha_venta) AS anio, SUM(cantidad) AS total_ventas
+    		FROM Ventas
+    		GROUP BY YEAR(fecha_venta);
+	END //
+	DELIMITER ;
+
+Disparador para registrar en la tabla de críticas cada vez que se inserta una nueva venta con una cantidad superior a 10:
+	DELIMITER //
+	CREATE TRIGGER InsertarCriticaDespuesVenta
+	AFTER INSERT ON Ventas
+	FOR EACH ROW
+	BEGIN
+    		IF NEW.cantidad > 10 THEN
+        	INSERT INTO Criticas (id_juego, id_usuario, puntuacion, comentario, fecha_critica)
+        	VALUES (NEW.id_juego, NEW.id_usuario, 5, '¡Excelente juego!', CURDATE());
+    		END IF;
+	END //
+	DELIMITER ;
