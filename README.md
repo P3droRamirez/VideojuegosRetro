@@ -43,3 +43,7 @@ El objetivo de esta aplicación es permitir a los usuarios mantener un registro 
 
 9. **Interfaz de Usuario Intuitiva:**
    - Navegar y gestionar la colección de videojuegos de manera eficiente y fácil de usar.
+  
+## Añadida carpeta de Pruebas unitarias con JUnit
+    
+## Creacion de documentación del proyecto con Javadoc(Carpeta dist ya que uso NetBeans)
